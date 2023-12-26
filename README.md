@@ -17,8 +17,10 @@ This application porvides an interactive user-interface that allows the user to 
 The Program Files are divided into two main folders, namely:
 
 1. GUI:
+   <br>
    The files that deal with the UI/UX aspect of the application.
 2. Backend:
+   <br>
    The files that comprise of the backend workings of the app.
    This would include both the training and testing of the model and the data handeling files
 
