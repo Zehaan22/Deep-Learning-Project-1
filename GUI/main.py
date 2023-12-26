@@ -147,14 +147,14 @@ class MainRun:
 
         foo_rect = pygame.Rect((50, 50), (800, 50))
         self.title_bar = pg.elements.UITextBox(
-            "<b>DL Based Digit Predictor 2000 : Beta Build</b>",
+            "<b>DL Based Digit Predictor 2000 : Beta Build (First Working Model)</b>",
             foo_rect,
             self.manager,
         )  # Title bar
 
         foo_rect = pygame.Rect((750, 450), (400, 200))
         self.pred_bar = pg.elements.UITextBox(
-            "My Best Guess is : <br> <b>9</b>",
+            "My Best Guess is : <br> <b>3</b>",
             foo_rect,
             self.manager
         )  # Prediction bar
