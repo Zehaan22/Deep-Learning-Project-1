@@ -124,7 +124,7 @@ class MainRun:
         # Setting the loop variables
         self.run = True
         self.CLOCK = pygame.time.Clock()
-        self.FPS = 80
+        self.FPS = 48
 
         # Creating the tiles
         self.sketch_board = DrawingSurface()
