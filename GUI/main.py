@@ -4,6 +4,7 @@ import pygame
 import pygame_gui as pg
 import torch
 import numpy as np
+from model import DigitModel
 pygame.init()
 
 # Defining Window variables
@@ -12,6 +13,12 @@ WIDTH, HEIGHT = 1200, 750
 # Creating the Window object
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Number Recognition Software")
+
+# Importing the model
+model = DigitModel()
+model.load_state_dict(
+    torch.load("Backend/Model.pt")
+)
 
 
 class Tile:
@@ -93,27 +100,16 @@ class DrawingSurface:
         for i in range(self.DIMS[0]):
             for j in range(self.DIMS[1]):
                 array.append(self.grid[i][j].color)
+        array = torch.Tensor(array)
 
-        # Loading the data tensore
-        X_data = torch.load("X_data.pt")
-        X_data = X_data.numpy()
-        # Adding our element to the data
-        X_data = np.append(X_data, [array], axis=0)
-        X_data = torch.from_numpy(X_data)
-        # Saving the data matrix
-        torch.save(X_data, "X_data.pt")
-        print("Saved the matrix")
+        model.eval()
+        with torch.inference_mode():
+            pred = model(array)
+            pred = torch.softmax(pred, dim=0)
+            pred = torch.argmax(pred, dim=0)
+        print(int(pred), value)
 
-        # Saving the label
-        y_data = torch.load("y_data.pt")
-        y_data = y_data.numpy()
-        # Adding our element to the data
-        label = value
-        y_data = np.append(y_data, [label])
-        y_data = torch.from_numpy(y_data)
-        # Saving the data matrix
-        torch.save(y_data, "y_data.pt")
-        print(f"Saved as the lable {label}")
+        return int(pred)
 
 
 class MainRun:
@@ -142,7 +138,7 @@ class MainRun:
         foo_rect = pygame.Rect((950, 650), (200, 60))
         self.store_btn = pg.elements.UIButton(
             relative_rect=foo_rect,
-            text='Store Matrix',
+            text='Predict Matrix',
             manager=self.manager)  # Button to store the board
 
         foo_rect = pygame.Rect((50, 50), (800, 50))
@@ -196,7 +192,10 @@ class MainRun:
             # Store the board
             if event.ui_element == self.store_btn:
                 value = self.input_box.get_text()  # Getting the input from the user
-                self.sketch_board.store_board(int(value))
+                pred = self.sketch_board.store_board(int(value))
+                self.pred_bar.set_text(
+                    f"My Best Guess is : <br> <b>{pred}</b>"
+                )
 
     def run_window(self):
         """Run an iteration of the window."""
